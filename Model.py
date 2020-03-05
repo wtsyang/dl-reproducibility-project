@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import numpy as np
 
 class Model(nn.Module):
-    def __init__(self, inputSize=32, n_classes=10, baseModel=[True,False,False], modifiedModel=[True, False, False, False],dropOut=True, BN=False, **kwargs):
+    def __init__(self, inputSize=3, n_classes=10, baseModel=[True,False,False], modifiedModel=[True, False, False, False],dropOut=True, BN=False, **kwargs):
         super(Model, self).__init__()
         self.inputSize=inputSize
         self.n_classes=n_classes
