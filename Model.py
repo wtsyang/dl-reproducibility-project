@@ -132,7 +132,7 @@ class Model(nn.Module):
         x = self.relu(x)
 
         # Layer 7
-        x = self.conv_1_192_192_1(x)
+        x = self.conv_1_192_192(x)
         if self.BN:
             x = self.BN_192(x)
         x = self.relu(x)
