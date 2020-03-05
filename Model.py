@@ -12,7 +12,26 @@ class Model(nn.Module):
         self.dropOut=dropOut
         self.BN=BN
 
-        self.convInput = nn.Conv2d(input_size, 96, 3, padding=1)
+        # Model A and B
+        self.conv_5_Input_96_1= nn.Conv2d(self.inputSize, 96, 5, padding=1)
+        self.conv_5_96_192_1= nn.Conv2d(96, 192, 5, padding=1)
+        # Strided A
+        self.conv_5_Input_96_2=nn.Conv2d(self.inputSize, 96, 5, padding=1,stride=2)
+        self.conv_5_96_192_2=nn.Conv2d(96, 192, 5, padding=1,stride=2)
+        # ConvPool
+        self.conv_5_96_96_1=nn.Conv2d(96, 96, 5, padding=1)
+        self.conv_5_192_192_1=nn.Conv2d(192, 192, 5, padding=1)
+        # All A
+        self.conv_5_96_96_2 = nn.Conv2d(96, 96, 5, padding=1, stride=2)
+        self.conv_5_192_192_2 = nn.Conv2d(192, 192, 5, padding=1, stride=2)
+
+
+        # Model B
+        self.conv_1_96_96_1 = nn.Conv2d(96, 96, 1, padding=1)
+        self.conv_1_96_192_1= nn.Conv2d(96, 192, 1, padding=1)
+
+        #  Model C
+        self.conv_3_Input_96_1 = nn.Conv2d(self.inputSize, 96, 3, padding=1)
         self.conv_3_96_96_1 = nn.Conv2d(96, 96, 3, padding=1)
         self.conv_3_96_96_2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
 
@@ -23,13 +42,19 @@ class Model(nn.Module):
         self.conv_1_192_192 = nn.Conv2d(192, 192, 1)
         self.conv_1_192_class = nn.Conv2d(192, self.n_classes, 1)
 
+        # Batch Normalzation
         self.BN_96 = nn.BatchNorm2d(96)
         self.BN_192 = nn.BatchNorm2d(192)
 
-        self.MaxP = nn.MaxPool2d(3, stride=2)
+        # Max Pooling
+        self.maxP = nn.MaxPool2d(3, stride=2)
+
+        # Other
         self.softMax=nn.Softmax()
         self.flatten=nn.Flatten()
-
+        self.dropOut_2=nn.Dropout(p=0.2)
+        self.dropOut_5=nn.Dropout(p=0.5)
+        self.relu=nn.ReLU()
 
 
         # Debug of baseModel
@@ -56,75 +81,211 @@ class Model(nn.Module):
             x=self.__buildModelB(x)
         elif self.baseModel[2]:
             x=self.__buildModelC(x)
-        return x
 
-    def __buildModelC(self,x):
-
-        if seld.dropOut:
-            x = F.dropout(x, .2)
-
-        # Layer 1
-        x=self.convInput(x)
-        if self.BN:
-            x=self.BN_96(x)
-        x=F.relu(x)
-
-        # Layer 2
-        x = self.conv_3_96_96_1(x)
-        if self.BN:
-            x = self.BN_96(x)
-        x = F.relu(x)
-
-        # Layer 3
-        x = self.conv_3_96_96_1(x)
-        if self.BN:
-            x = self.BN_96(x)
-        x = F.relu(x)
-
-        # Max Pooling
-        x =self.MaxP(x)
-        if seld.dropOut:
-            x = F.dropout(x, .5)
-
-        # Layer 4
-        x=self.conv_3_96_192_1(x)
-        if self.BN:
-            x = self.BN_192(x)
-        x = F.relu(x)
-
-        # Layer 5
-        x = self.conv_3_192_192_1(x)
-        if self.BN:
-            x = self.BN_192(x)
-        x = F.relu(x)
-
-        # Max Pooling
-        x = self.MaxP(x)
-        if seld.dropOut:
-            x = F.dropout(x, .5)
-
+        # The top layers are identical in each model
         # Layer 6
         x = self.conv_3_192_192_1(x)
         if self.BN:
             x = self.BN_192(x)
-        x = F.relu(x)
+        x = self.relu(x)
 
         # Layer 7
         x = self.conv_1_192_192_1(x)
         if self.BN:
             x = self.BN_192(x)
-        x = F.relu(x)
+        x = self.relu(x)
 
         # Layer 8
         x = self.conv_1_192_class(x)
         if self.BN:
             x = self.BN_192(x)
-        x = F.relu(x)
+        x = self.relu(x)
 
         # The Last Layers
         x = F.adaptive_avg_pool2d(x, 1)
         x = self.flatten(x)
-        x=self.softMax(x)
+        x = self.softMax(x)
+
+        return x
+
+    def __buildModelA(self, x):
+
+        if self.dropOut:
+            x = self.dropOut_2(x)
+
+        # Layer 1
+        x = self.conv_5_Input_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        # Layer 2
+        x=self.conv_5_96_192_1(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        return x
+
+    def __buildModel_stridedA(self, x):
+
+        if self.dropOut:
+            x = self.dropOut_2(x)
+
+        # Layer 1
+        x = self.conv_5_Input_96_2(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        # Layer 2
+        x = self.conv_5_96_192_2(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        return x
+
+    def __buildModel_ConvPoolA(self, x):
+
+        if self.dropOut:
+            x = self.dropOut_2(x)
+
+        # Layer 1
+        x = self.conv_5_Input_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Layer 2
+        x = self.conv_5_96_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        # Layer 3
+        x = self.conv_5_96_192_1(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Layer 4
+        x = self.conv_5_192_192_1(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        return x
+
+    def __buildModelB(self, x):
+
+        if self.dropOut:
+            x = self.dropOut_2(x)
+
+        # Layer 1
+        x = self.conv_5_Input_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Layer 2
+        x = self.conv_1_96_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        # Layer 3
+        x = self.conv_5_96_192(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Layer 4
+        x = self.conv_1_96_192_1(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        return x
+
+    def __buildModelC(self,x):
+
+        if self.dropOut:
+            x = self.dropOut_2(x)
+
+        # Layer 1
+        x=self.conv_3_Input_96_1(x)
+        if self.BN:
+            x=self.BN_96(x)
+        x=self.relu(x)
+
+        # Layer 2
+        x = self.conv_3_96_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Layer 3
+        x = self.conv_3_96_96_1(x)
+        if self.BN:
+            x = self.BN_96(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x =self.maxP(x)
+        if self.dropOut:
+            x = self.dropOut_5(x)
+
+        # Layer 4
+        x=self.conv_3_96_192_1(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Layer 5
+        x = self.conv_3_192_192_1(x)
+        if self.BN:
+            x = self.BN_192(x)
+        x = self.relu(x)
+
+        # Max Pooling
+        x = self.maxP(x)
+        if self.dropOut:
+            x = self.dropout(x, .5)
 
         return x
 
