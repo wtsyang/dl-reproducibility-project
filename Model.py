@@ -52,7 +52,7 @@ class Model(nn.Module):
             self.conv_5_Input_96_1 = nn.Conv2d(self.inputSize, 96, 5, padding=1)
             self.conv_5_96_192_1 = nn.Conv2d(96, 192, 5, padding=1)
             self.conv_1_96_96_1 = nn.Conv2d(96, 96, 1, padding=1)
-            self.conv_1_192_192_1 = nn.Conv2d(96, 192, 1, padding=1)
+            self.conv_1_192_192_1 = nn.Conv2d(192, 192, 1, padding=1)
             if self.modifiedModel[1] or self.modifiedModel[3]:
                 # Strided B amd All B
                 self.conv_1_96_96_2=nn.Conv2d(96,96,1, padding=1, stride=2)
