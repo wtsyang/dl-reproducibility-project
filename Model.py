@@ -30,6 +30,27 @@ class Model(nn.Module):
             self.modifiedModel[3] = False
 
         # Intialize Layers and build the model
+
+        # Top Layers
+        self.conv_3_192_192_1 = nn.Conv2d(192, 192, 3, padding=1)
+        self.conv_1_192_192 = nn.Conv2d(192, 192, 1)
+        self.conv_1_192_class = nn.Conv2d(192, self.n_classes, 1)
+
+        # Batch Normalzation
+        self.BN_96 = nn.BatchNorm2d(96)
+        self.BN_192 = nn.BatchNorm2d(192)
+
+        # Max Pooling
+        self.maxP = nn.MaxPool2d(3, stride=2)
+
+        # Other
+        self.softMax = nn.Softmax()
+        self.flatten = nn.Flatten()
+        self.dropOut_2 = nn.Dropout(p=0.2)
+        self.dropOut_5 = nn.Dropout(p=0.5)
+        self.relu = nn.ReLU()
+        self.avgPooling = nn.AdaptiveAvgPool2d((self.n_classes, 1))
+        
         if self.baseModel[0]:
             # Model A
             self.conv_5_Input_96_1 = nn.Conv2d(self.inputSize, 96, 5, padding=1)
@@ -79,26 +100,6 @@ class Model(nn.Module):
                 # Strided C and All C
                 self.conv_3_96_192_1 = nn.Conv2d(96, 192, 3, padding=1)
                 self.conv_3_192_192_2 = nn.Conv2d(192, 192, 3, padding=1, stride=2)
-
-        # Top Layers
-        self.conv_3_192_192_1 = nn.Conv2d(192, 192, 3, padding=1)
-        self.conv_1_192_192 = nn.Conv2d(192, 192, 1)
-        self.conv_1_192_class = nn.Conv2d(192, self.n_classes, 1)
-
-        # Batch Normalzation
-        self.BN_96 = nn.BatchNorm2d(96)
-        self.BN_192 = nn.BatchNorm2d(192)
-
-        # Max Pooling
-        self.maxP = nn.MaxPool2d(3, stride=2)
-
-        # Other
-        self.softMax = nn.Softmax()
-        self.flatten = nn.Flatten()
-        self.dropOut_2 = nn.Dropout(p=0.2)
-        self.dropOut_5 = nn.Dropout(p=0.5)
-        self.relu = nn.ReLU()
-        self.avgPooling=nn.AdaptiveAvgPool2d((self.n_classes,1))
 
         # Build top layers
         self.__buildTopLayer()
@@ -177,7 +178,7 @@ class Model(nn.Module):
         if self.dropOut:
             self.model.add_module(self.dropOut_5)
 
-        # Layer 2
+        # Layer 2dropOut_2
         self.model.add_module(self.conv_5_96_192_2)
         if self.BN:
             self.model.add_module(self.BN_192)
