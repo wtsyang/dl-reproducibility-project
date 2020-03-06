@@ -29,23 +29,33 @@ class Model(nn.Module):
             self.modifiedModel[2] = False
             self.modifiedModel[3] = False
 
-        # Intialize Layers
+        # Intialize Layers and build the model
         if self.baseModel[0]:
             # Model A
             self.conv_5_Input_96_1 = nn.Conv2d(self.inputSize, 96, 5, padding=1)
             self.conv_5_96_192_1 = nn.Conv2d(96, 192, 5, padding=1)
-            if self.modifiedModel[1]:
+            if self.modifiedModel[0]:
+                self.__buildModelA()
+
+            elif self.modifiedModel[1]:
                 # Strided A
                 self.conv_5_Input_96_2 = nn.Conv2d(self.inputSize, 96, 5, padding=1, stride=2)
                 self.conv_5_96_192_2 = nn.Conv2d(96, 192, 5, padding=1, stride=2)
+
+                self.buildModel_stridedA()
+
             elif self.modifiedModel[2]:
                 # ConvPool
                 self.conv_5_96_96_1 = nn.Conv2d(96, 96, 5, padding=1)
                 self.conv_5_192_192_1 = nn.Conv2d(192, 192, 5, padding=1)
+
+                self.__buildModel_ConvPoolA()
             elif self.modifiedModel[3]:
                 # All A
                 self.conv_5_96_96_2 = nn.Conv2d(96, 96, 5, padding=1, stride=2)
                 self.conv_5_192_192_2 = nn.Conv2d(192, 192, 5, padding=1, stride=2)
+
+                self.__buildModel_AllA()
 
         elif self.baseModel[1]:
 
@@ -88,68 +98,42 @@ class Model(nn.Module):
         self.dropOut_2 = nn.Dropout(p=0.2)
         self.dropOut_5 = nn.Dropout(p=0.5)
         self.relu = nn.ReLU()
+        self.avgPooling=nn.AdaptiveAvgPool2d((self.n_classes,1))
 
-
+        # Build top layers
+        self.__buildTopLayer()
 
     def forward(self,x):
-        if self.baseModel[0]:
-            if self.modifiedModel[0]:
-                x=self.__buildModelA(x)
-            elif self.modifiedModel[1]:
-                x=self.__buildModel_stridedA(x)
-            elif self.modifiedModel[2]:
-                x=self.__buildModel_ConvPoolA(x)
-            else:
-                x=self.__buildModel_AllA(x)
-
-        elif self.baseModel[1]:
-            if self.modifiedModel[0]:
-                x = self.__buildModelB(x)
-            elif self.modifiedModel[1]:
-                x = self.__buildModel_stridedB(x)
-            elif self.modifiedModel[2]:
-                x = self.__buildModel_ConvPoolB(x)
-            else:
-                x = self.__buildModel_AllB(x)
-
-        elif self.baseModel[2]:
-            if self.modifiedModel[0]:
-                x = self.__buildModelC(x)
-            elif self.modifiedModel[1]:
-                x = self.__buildModel_stridedC(x)
-            elif self.modifiedModel[2]:
-                x = self.__buildModel_ConvPoolC(x)
-            else:
-                x = self.__buildModel_AllC(x)
-
-
-        '''
-        The top layers are identical in each model
-        '''
-        # Layer 6
-        x = self.conv_3_192_192_1(x)
-        if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
-
-        # Layer 7
-        x = self.conv_1_192_192(x)
-        if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
-
-        # Layer 8
-        x = self.conv_1_192_class(x)
-        if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
-
-        # The Last Layers
-        x = F.adaptive_avg_pool2d(x, 1)
-        x = self.flatten(x)
-        x = self.softMax(x)
+        x=self.model(x)
 
         return x
+
+    def __buildTopLayer(self):
+        '''
+                The top layers are identical in each model
+                '''
+        # Layer 6
+        self.model.add_module(self.conv_3_192_192_1)
+        if self.BN:
+            self.model.add_module(self.BN_192)
+        self.model.add_module( self.relu)
+
+        # Layer 7
+        self.model.add_module(self.conv_1_192_192)
+        if self.BN:
+            self.model.add_module(self.BN_192)
+        self.model.add_module( self.relu)
+
+        # Layer 8
+        self.model.add_module(self.conv_1_192_class)
+        if self.BN:
+            self.model.add_module( self.BN_192)
+        self.model.add_module(self.relu)
+
+        # The Last Layers
+        self.model.add_module(self.avgPooling)
+        self.model.add_module(self.flatten)
+        self.model.add_module( self.softMax)
 
     def __buildModelA(self):
 
@@ -241,40 +225,38 @@ class Model(nn.Module):
             self.model.add_module( self.dropOut_5)
 
 
-    def __buildModel_AllA(self, x):
+    def __buildModel_AllA(self):
 
         if self.dropOut:
-            x = self.dropOut_2(x)
+            self.model.add_module(self.dropOut_2)
 
         # Layer 1
-        x = self.conv_5_Input_96_1(x)
+        self.model.add_module(self.conv_5_Input_96_1)
         if self.BN:
-            x = self.BN_96(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_96)
+        self.model.add_module(self.relu)
 
         # Pooling
-        x = self.conv_5_96_96_2(x)
+        self.model.add_module(self.conv_5_96_96_2)
         if self.BN:
-            x = self.BN_96(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_96)
+        self.model.add_module(self.relu)
         if self.dropOut:
-            x = self.dropOut_5(x)
+            self.model.add_module(self.dropOut_5)
 
         # Layer 2
-        x=self.conv_5_96_192_1(x)
+        self.model.add_module(self.conv_5_96_192_1)
         if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_192)
+        self.model.add_module(self.relu)
 
         # Max Pooling
-        x = self.conv_5_192_192_2(x)
+        self.model.add_module(self.conv_5_192_192_2)
         if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_192)
+        self.model.add_module(self.relu)
         if self.dropOut:
-            x = self.dropOut_5(x)
-
-        return x
+            self.model.add_module(self.dropOut_5)
 
 
     def __buildModelB(self, x):
