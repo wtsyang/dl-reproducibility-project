@@ -168,95 +168,95 @@ class Model(nn.Module):
     def __buildModel_stridedA(self, x):
 
         if self.dropOut:
-            self.model.add_module(self.dropOut_2)
+            self.model.add_module('Input DropOut', self.dropOut_2)
 
         # Layer 1
-        self.model.add_module(self.conv_5_Input_96_2)
+        self.model.add_module('Conv 5x5 96', self.conv_5_Input_96_2)
         if self.BN:
-            self.model.add_module(self.BN_96)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_96)
+        self.model.add_module('Relu', self.relu)
         if self.dropOut:
-            self.model.add_module(self.dropOut_5)
+            self.model.add_module('Pooling DropOut', self.dropOut_5)
 
         # Layer 2dropOut_2
-        self.model.add_module(self.conv_5_96_192_2)
+        self.model.add_module('Conv 5x5 192', self.conv_5_96_192_2)
         if self.BN:
-            self.model.add_module(self.BN_192)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_192)
+        self.model.add_module('Relu', self.relu)
         if self.dropOut:
-            self.model.add_module(self.dropOut_5)
+            self.model.add_module('Pooling DropOut', self.dropOut_5)
 
     def __buildModel_ConvPoolA(self, x):
 
         if self.dropOut:
-            self.model.add_module(self.dropOut_2)
+            self.model.add_module('Input DropOut', self.dropOut_2)
 
         # Layer 1
-        self.model.add_module(self.conv_5_Input_96_1)
+        self.model.add_module('Conv 5x5 96', self.conv_5_Input_96_1)
         if self.BN:
-            self.model.add_module(self.BN_96)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_96)
+        self.model.add_module('Relu', self.relu)
 
         # Layer 2
-        self.model.add_module(self.conv_5_96_96_1)
+        self.model.add_module('Conv 5x5 96', self.conv_5_96_96_1)
         if self.BN:
-            self.model.add_module(self.BN_96)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_96)
+        self.model.add_module('Relu', self.relu)
 
         # Max Pooling
-        self.model.add_module(self.maxP)
+        self.model.add_module('Max Pooling', self.maxP)
         if self.dropOut:
-            self.model.add_module(self.dropOut_5)
+            self.model.add_module('Pooling DropOut',self.dropOut_5)
 
         # Layer 3
-        self.model.add_module(self.conv_5_96_192_1)
+        self.model.add_module('Conv 5x5 192', self.conv_5_96_192_1)
         if self.BN:
-            self.model.add_module(self.BN_192)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_192)
+        self.model.add_module('Relu', self.relu)
 
         # Layer 4
-        self.model.add_module(self.conv_5_192_192_1)
+        self.model.add_module('Conv 5x5 192', self.conv_5_192_192_1)
         if self.BN:
-            self.model.add_module(self.BN_192)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_192)
+        self.model.add_module('Relu', self.relu)
 
         # Max Pooling
-        self.model.add_module(self.maxP)
+        self.model.add_module('Max Pooling', self.maxP)
         if self.dropOut:
-            self.model.add_module(self.dropOut_5)
+            self.model.add_module('Pooling DropOut', self.dropOut_5)
 
     def __buildModel_AllA(self):
 
         if self.dropOut:
-            self.model.add_module(self.dropOut_2)
+            self.model.add_module('Input DropOut', self.dropOut_2)
 
         # Layer 1
-        self.model.add_module(self.conv_5_Input_96_1)
+        self.model.add_module('Conv 5x5 96',self.conv_5_Input_96_1)
         if self.BN:
-            self.model.add_module(self.BN_96)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_96)
+        self.model.add_module('Relu', self.relu)
 
         # Pooling
-        self.model.add_module(self.conv_5_96_96_2)
+        self.model.add_module('Conv 5x5 96', self.conv_5_96_96_2)
         if self.BN:
-            self.model.add_module(self.BN_96)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN', self.BN_96)
+        self.model.add_module('Relu', self.relu)
         if self.dropOut:
-            self.model.add_module(self.dropOut_5)
+            self.model.add_module('Pooling DropOut', self.dropOut_5)
 
         # Layer 2
-        self.model.add_module(self.conv_5_96_192_1)
+        self.model.add_module('Conv 5x5 192', self.conv_5_96_192_1)
         if self.BN:
-            self.model.add_module(self.BN_192)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN',self.BN_192)
+        self.model.add_module('Relu', self.relu)
 
         # Max Pooling
-        self.model.add_module(self.conv_5_192_192_2)
+        self.model.add_module('Conv 5x5 192', self.conv_5_192_192_2)
         if self.BN:
-            self.model.add_module(self.BN_192)
-        self.model.add_module(self.relu)
+            self.model.add_module('BN',self.BN_192)
+        self.model.add_module('Relu', self.relu)
         if self.dropOut:
-            self.model.add_module(self.dropOut_5)
+            self.model.add_module('Pooling DropOut', self.dropOut_5)
 
     def __buildModelB(self, x):
 
