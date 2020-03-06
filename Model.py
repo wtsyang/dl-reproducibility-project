@@ -110,12 +110,12 @@ class Model(nn.Module):
             #  Model C
             self.conv_3_Input_96_1 = nn.Conv2d(self.inputSize, 96, 3, padding=1)
             self.conv_3_96_96_1 = nn.Conv2d(96, 96, 3, padding=1)
-            self.conv_3_96_96_2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
+            self.conv_3_96_192_1 = nn.Conv2d(96, 192, 3, padding=1)
 
             if self.modifiedModel[1] or self.modifiedModel[3]:
                 # Strided C and All C
-                self.conv_3_96_192_1 = nn.Conv2d(96, 192, 3, padding=1)
                 self.conv_3_192_192_2 = nn.Conv2d(192, 192, 3, padding=1, stride=2)
+                self.conv_3_96_96_2 = nn.Conv2d(96, 96, 3, padding=1, stride=2)
 
             if self.modifiedModel[0]:
                 self.__buildModelC()
