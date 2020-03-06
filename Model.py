@@ -11,6 +11,7 @@ class Model(nn.Module):
         self.baseModel=baseModel
         self.dropOut=dropOut
         self.BN = BN
+        self.model=nn.Sequential()
         #self.description=[]
 
         # Debug of baseModel
@@ -150,98 +151,95 @@ class Model(nn.Module):
 
         return x
 
-    def __buildModelA(self, x):
+    def __buildModelA(self):
 
         if self.dropOut:
-            x = self.dropOut_2(x)
+            self.model.add_module(self.dropOut_2)
 
         # Layer 1
-        x = self.conv_5_Input_96_1(x)
+        self.model.add_module(self.conv_5_Input_96_1)
         if self.BN:
-            x = self.BN_96(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_96)
+        self.model.add_module(self.relu)
 
         # Max Pooling
-        x = self.maxP(x)
+        self.model.add_module(self.maxP)
         if self.dropOut:
-            x = self.dropOut_5(x)
+            self.model.add_module(self.dropOut_5)
 
         # Layer 2
-        x=self.conv_5_96_192_1(x)
+        self.model.add_module(self.conv_5_96_192_1)
         if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_192)
+        self.model.add_module(self.relu)
 
         # Max Pooling
-        x = self.maxP(x)
+        self.model.add_module(self.maxP)
         if self.dropOut:
-            x = self.dropOut_5(x)
+            self.model.add_module(self.dropOut_5)
 
-        return x
+
 
     def __buildModel_stridedA(self, x):
 
         if self.dropOut:
-            x = self.dropOut_2(x)
+            self.model.add_module(self.dropOut_2)
 
         # Layer 1
-        x = self.conv_5_Input_96_2(x)
+        self.model.add_module(self.conv_5_Input_96_2)
         if self.BN:
-            x = self.BN_96(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_96)
+        self.model.add_module(self.relu)
         if self.dropOut:
-            x = self.dropOut_5(x)
+            self.model.add_module(self.dropOut_5)
 
         # Layer 2
-        x = self.conv_5_96_192_2(x)
+        self.model.add_module(self.conv_5_96_192_2)
         if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_192)
+        self.model.add_module(self.relu)
         if self.dropOut:
-            x = self.dropOut_5(x)
-
-        return x
+            self.model.add_module(self.dropOut_5)
 
     def __buildModel_ConvPoolA(self, x):
 
         if self.dropOut:
-            x = self.dropOut_2(x)
+            self.model.add_module(self.dropOut_2)
 
         # Layer 1
-        x = self.conv_5_Input_96_1(x)
+        self.model.add_module(self.conv_5_Input_96_1)
         if self.BN:
-            x = self.BN_96(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_96)
+        self.model.add_module( self.relu)
 
         # Layer 2
-        x = self.conv_5_96_96_1(x)
+        self.model.add_module(self.conv_5_96_96_1)
         if self.BN:
-            x = self.BN_96(x)
-        x = self.relu(x)
+            self.model.add_module( self.BN_96)
+        self.model.add_module(self.relu)
 
         # Max Pooling
-        x = self.maxP(x)
+        self.model.add_module(self.maxP)
         if self.dropOut:
-            x = self.dropOut_5(x)
+            self.model.add_module(self.dropOut_5)
 
         # Layer 3
-        x = self.conv_5_96_192_1(x)
+        self.model.add_module(self.conv_5_96_192_1)
         if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
+            self.model.add_module( self.BN_192)
+        self.model.add_module( self.relu)
 
         # Layer 4
-        x = self.conv_5_192_192_1(x)
+        self.model.add_module(self.conv_5_192_192_1)
         if self.BN:
-            x = self.BN_192(x)
-        x = self.relu(x)
+            self.model.add_module(self.BN_192)
+        self.model.add_module( self.relu)
 
         # Max Pooling
-        x = self.maxP(x)
+        self.model.add_module( self.maxP)
         if self.dropOut:
-            x = self.dropOut_5(x)
+            self.model.add_module( self.dropOut_5)
 
-        return x
 
     def __buildModel_AllA(self, x):
 
