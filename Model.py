@@ -187,7 +187,7 @@ class Model(nn.Module):
         if self.dropOut:
             self.model.add_module('Pooling DropOut', self.dropOut_5)
 
-    def __buildModel_stridedA(self, x):
+    def __buildModel_stridedA(self):
 
         if self.dropOut:
             self.model.add_module('Input DropOut', self.dropOut_2)
@@ -208,7 +208,7 @@ class Model(nn.Module):
         if self.dropOut:
             self.model.add_module('Pooling DropOut', self.dropOut_5)
 
-    def __buildModel_ConvPoolA(self, x):
+    def __buildModel_ConvPoolA(self):
 
         if self.dropOut:
             self.model.add_module('Input DropOut', self.dropOut_2)
