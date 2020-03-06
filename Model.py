@@ -60,28 +60,30 @@ class Model(nn.Module):
             self.conv_5_Input_96_1 = nn.Conv2d(self.inputSize, 96, 5, padding=1)
             self.conv_5_96_192_1 = nn.Conv2d(96, 192, 5, padding=1)
 
-            if self.modifiedModel[0]:
-                self.__buildModelA()
-
-            elif self.modifiedModel[1]:
+            # Initialize layers
+            if self.modifiedModel[1]:
                 # Strided A
                 self.conv_5_Input_96_2 = nn.Conv2d(self.inputSize, 96, 5, padding=1, stride=2)
                 self.conv_5_96_192_2 = nn.Conv2d(96, 192, 5, padding=1, stride=2)
-
-                self.buildModel_stridedA()
-
             elif self.modifiedModel[2]:
                 # ConvPool
                 self.conv_5_96_96_1 = nn.Conv2d(96, 96, 5, padding=1)
                 self.conv_5_192_192_1 = nn.Conv2d(192, 192, 5, padding=1)
-
-                self.__buildModel_ConvPoolA()
             elif self.modifiedModel[3]:
                 # All A
                 self.conv_5_96_96_2 = nn.Conv2d(96, 96, 5, padding=1, stride=2)
                 self.conv_5_192_192_2 = nn.Conv2d(192, 192, 5, padding=1, stride=2)
 
+
+            if self.modifiedModel[0]:
+                self.__buildModelA()
+            elif self.modifiedModel[1]:
+                self.__buildModel_stridedA()
+            elif self.modifiedModel[2]:
+                self.__buildModel_ConvPoolA()
+            else:
                 self.__buildModel_AllA()
+
 
         elif self.baseModel[1]:
 
@@ -95,6 +97,15 @@ class Model(nn.Module):
                 self.conv_1_96_96_2 = nn.Conv2d(96, 96, 1, padding=1, stride=2)
                 self.conv_1_192_192_2 = nn.Conv2d(192, 192, 1, padding=1, stride=2)
 
+            if self.modifiedModel[0]:
+                self.__buildModelB()
+            elif self.modifiedModel[1]:
+                self.__buildModel_stridedB()
+            elif self.modifiedModel[2]:
+                self.__buildModel_ConvPoolB()
+            else:
+                self.__buildModel_AllB()
+
         else:
             #  Model C
             self.conv_3_Input_96_1 = nn.Conv2d(self.inputSize, 96, 3, padding=1)
@@ -106,6 +117,14 @@ class Model(nn.Module):
                 self.conv_3_96_192_1 = nn.Conv2d(96, 192, 3, padding=1)
                 self.conv_3_192_192_2 = nn.Conv2d(192, 192, 3, padding=1, stride=2)
 
+            if self.modifiedModel[0]:
+                self.__buildModelC()
+            elif self.modifiedModel[1]:
+                self.__buildModel_stridedC()
+            elif self.modifiedModel[2]:
+                self.__buildModel_ConvPoolC()
+            else:
+                self.__buildModel_AllC()
         # Build top layers
         self.__buildTopLayer()
 
