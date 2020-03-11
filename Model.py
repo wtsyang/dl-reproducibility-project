@@ -159,7 +159,7 @@ class Model(nn.Module):
         # The Last Layers
         self.layers.append(self.avgPooling)
         self.layers.append(self.flatten)
-        self.layers.append(self.softMax)
+        #self.layers.append(self.softMax)
 
     def __buildModelA(self):
 
