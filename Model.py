@@ -44,7 +44,7 @@ class Model(nn.Module):
         # Batch Normalzation
         self.BN_96 = nn.BatchNorm2d(96)
         self.BN_192 = nn.BatchNorm2d(192)
-
+        self.BN_class= nn.BatchNorm2d(n_classes)
         # Max Pooling
         self.maxP = nn.MaxPool2d(3, stride=2)
 
@@ -153,7 +153,7 @@ class Model(nn.Module):
         # Layer 8
         self.layers.append(self.conv_1_192_class)
         if self.BN:
-            self.layers.append(self.BN_192)
+            self.layers.append(self.BN_class)
         self.layers.append(self.relu)
 
         # The Last Layers
