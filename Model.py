@@ -180,7 +180,7 @@ class Model(nn.Module):
         # Layer 2
         self.layers.append(self.conv_5_96_192_1)
         if self.BN:
-            self.layers.append('BN2', self.BN_192)
+            self.layers.append( self.BN_192)
         self.layers.append(self.relu)
 
         # Max Pooling
