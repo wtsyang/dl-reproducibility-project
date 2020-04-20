@@ -36,7 +36,7 @@ class Training():
         self.best_epoch = -1
         self.dataset_path = './cifar10'
         self.gsync_save = True
-        self.gsync = utils.GDriveSync()
+        #self.gsync = utils.GDriveSync()
         self.bestModel_allLR = bestModel_allLR
         self.lrPair = lrPair
         self.epochNum = epochNum
@@ -203,13 +203,13 @@ class Training():
             self.best_epoch = self.epoch
             self.best_loss = self.test_loss
             torch.save(self.model, "best_" + str(self.lr) + ".pt")
-
+            '''
             try:
                 if self.gsync_save:
                     self.gsync.update_file_to_folder("best_" + str(self.lr) + ".pt")
             except:
                 print('Failed to gsync_save.')
-
+            '''
             # Save the best model among three different lr
             if self.test_loss < self.global_loss:
 
