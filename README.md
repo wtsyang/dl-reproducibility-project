@@ -1,6 +1,2 @@
 # dl-reproducibility-project
-We try to reproduce the Table 3 in the paper. 
-+ [Paper: STRIVING FOR SIMPLICITY: THE ALL CONVOLUTIONAL NET ](https://arxiv.org/abs/1412.6806)
-+ [Script](https://github.com/StefOe/all-conv-pytorch)
-
-Run the cnnTrain on colab.
+In this repository, we try to reproduce the TABLE 3 in the [original paper](https://arxiv.org/abs/1412.6806). The source code of one of the models on ```Pytorch``` and the training procedure on Google Colab can be found in [Github](https://github.com/StefOe/all-conv-pytorch). **We adopt the original training procedure and change it to the Python class. Also, we build the models from scratch on Pytorch.**
